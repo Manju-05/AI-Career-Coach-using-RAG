@@ -1,14 +1,3 @@
----
-title: AI Career Coach using Traditional RAG
-emoji: 🎯
-colorFrom: blue
-colorTo: green
-sdk: streamlit
-sdk_version: 1.41.1
-app_file: app.py
-pinned: false
----
-
 # AI Career Coach using Traditional RAG
 
 This project is an end-to-end **traditional RAG application** for AI School of India members.
