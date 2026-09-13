@@ -288,6 +288,7 @@ if build_index_btn:
             st.session_state.chunks = chunks
 
             status.update(label="✅ RAG Knowledge Base Successfully Built!", state="complete", expanded=False)
+            st.rerun()
 
 # Show RAG Metrics when vectorstore is available
 if st.session_state.vectorstore:

@@ -1,9 +1,8 @@
-from __future__ import annotations
-
 import os
 import tempfile
 from pathlib import Path
 from typing import List, Tuple
+from functools import lru_cache
 
 from dotenv import load_dotenv
 from langchain_core.documents import Document
@@ -11,16 +10,16 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
+
+# Disable ChromaDB telemetry errors
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_DIR / ".env")
 
 DB_DIR = "career_coach_chroma_db"
-
-
-from functools import lru_cache
 
 def get_llm(model: str | None = None, temperature: float = 0.2, api_key: str | None = None):
     key = (api_key or os.getenv("GROQ_API_KEY", "")).strip()
