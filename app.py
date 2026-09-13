@@ -154,30 +154,8 @@ if "jd_text" not in st.session_state:
 # Sidebar Configuration
 # -------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### ⚙️ Engine Settings")
-
-    api_key_input = st.text_input(
-        "Groq API Key",
-        value=os.getenv("GROQ_API_KEY", ""),
-        type="password",
-        help="Enter your Groq API key. If empty, falls back to the .env file.",
-    )
-
-    selected_model = st.selectbox(
-        "LLM Inference Model",
-        [
-            "llama-3.3-70b-versatile",
-            "llama-3.1-8b-instant",
-            "mixtral-8x7b-32768",
-            "gemma2-9b-it",
-            "qwen/qwen3-32b",
-        ],
-        index=0,
-    )
-
-    st.markdown("---")
     st.markdown("### 🎛️ RAG Parameters")
-    chunk_size = st.slider("Chunk Size (Tokens/Chars)", 300, 1500, 800, 100)
+    chunk_size = st.slider("Chunk Size (Characters)", 300, 1500, 800, 100)
     chunk_overlap = st.slider("Chunk Overlap", 0, 400, 150, 50)
     retrieval_k = st.slider("Top-K Retrieved Chunks", 2, 10, 5, 1)
 
@@ -350,14 +328,12 @@ if st.session_state.vectorstore:
         st.write("Generate an end-to-end evaluation covering ATS score, skill gaps, resume bullet upgrades, and project recommendations.")
 
         if st.button("✨ Generate Full Career Report", type="primary", key="gen_report_btn"):
-            with st.spinner(f"Running multi-stage retrieval with {selected_model}..."):
+            with st.spinner("Running multi-stage RAG retrieval and generating executive report..."):
                 try:
                     report, sources = generate_complete_report(
                         st.session_state.vectorstore,
                         st.session_state.resume_text,
                         st.session_state.jd_text,
-                        model=selected_model,
-                        api_key=api_key_input,
                     )
                     st.markdown(f'<div class="response-card">{report}</div>', unsafe_allow_html=True)
                     st.download_button(
@@ -393,8 +369,6 @@ if st.session_state.vectorstore:
                         st.session_state.resume_text,
                         st.session_state.jd_text,
                         final_query,
-                        model=selected_model,
-                        api_key=api_key_input,
                     )
                     st.markdown(f'<div class="response-card">{answer}</div>', unsafe_allow_html=True)
                 except Exception as e:
