@@ -1,0 +1,6 @@
+.env
+career_coach_chroma_db/
+career_coach_chroma_db_*/
+__pycache__/
+*.py[cod]
+.streamlit/secrets.toml

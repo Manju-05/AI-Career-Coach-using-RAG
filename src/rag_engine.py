@@ -20,13 +20,17 @@ load_dotenv(PROJECT_DIR / ".env")
 DB_DIR = "career_coach_chroma_db"
 
 
-def get_llm(model: str = "openai/gpt-oss-safeguard-20b", temperature: float = 0.2):
-    api_key = os.getenv("GROQ_API_KEY", "").strip()
-    if not api_key:
-        raise ValueError("GROQ_API_KEY not found. Create a .env file and add your Groq API key.")
-    return ChatGroq(model=model, temperature=temperature)
+from functools import lru_cache
+
+def get_llm(model: str | None = None, temperature: float = 0.2, api_key: str | None = None):
+    key = (api_key or os.getenv("GROQ_API_KEY", "")).strip()
+    if not key:
+        raise ValueError("GROQ_API_KEY not found. Please provide a valid Groq API key.")
+    model = model or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+    return ChatGroq(model=model, temperature=temperature, groq_api_key=key)
 
 
+@lru_cache(maxsize=1)
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
@@ -92,8 +96,8 @@ def retrieve_context(vectorstore, query: str, k: int = 5) -> Tuple[str, List[Doc
 # -----------------------------
 # Stage 6: Generate Answer
 # -----------------------------
-def run_career_coach(vectorstore, resume_text: str, jd_text: str, question: str):
-    llm = get_llm()
+def run_career_coach(vectorstore, resume_text: str, jd_text: str, question: str, model: str | None = None, api_key: str | None = None):
+    llm = get_llm(model=model, api_key=api_key)
 
     retrieval_query = f"""
     Resume content and job description content relevant to this career coaching question:
@@ -129,9 +133,9 @@ Keep the answer simple, actionable and beginner-friendly.
     return answer, source_docs
 
 
-def generate_complete_report(vectorstore, resume_text: str, jd_text: str):
+def generate_complete_report(vectorstore, resume_text: str, jd_text: str, model: str | None = None, api_key: str | None = None):
     question = """
     Analyze this resume against this job description. Provide ATS-style score, skill match, missing skills,
     resume improvement suggestions, project suggestions, and interview questions.
     """
-    return run_career_coach(vectorstore, resume_text, jd_text, question)
+    return run_career_coach(vectorstore, resume_text, jd_text, question, model=model, api_key=api_key)

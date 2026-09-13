@@ -1,3 +1,14 @@
+---
+title: AI Career Coach using Traditional RAG
+emoji: 🎯
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: 1.41.1
+app_file: app.py
+pinned: false
+---
+
 # AI Career Coach using Traditional RAG
 
 This project is an end-to-end **traditional RAG application** for AI School of India members.
@@ -64,11 +75,14 @@ pip install -r requirements.txt
 
 ### 4. Add Groq API key
 
-Create a `.env` file:
+For local development, create a `.env` file:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 ```
+
+For Hugging Face Spaces, add `GROQ_API_KEY` under **Settings > Variables and secrets**.
+You can optionally add `GROQ_MODEL`; it defaults to `qwen/qwen3-32b`.
 
 ### 5. Run app
 
