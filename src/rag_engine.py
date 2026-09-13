@@ -25,7 +25,7 @@ def get_llm(model: str | None = None, temperature: float = 0.2, api_key: str | N
     key = (api_key or os.getenv("GROQ_API_KEY", "")).strip()
     if not key:
         raise ValueError("GROQ_API_KEY not found. Please provide a valid Groq API key.")
-    model = model or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+    model = model or os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b").strip()
     return ChatGroq(model=model, temperature=temperature, groq_api_key=key)
 
 
